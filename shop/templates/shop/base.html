@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+	<head>
+	<!-- Bootstrap Links -->
+	<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
+
+	<title>{% block title %}My shop{% endblock %}</title>
+
+</head>
+
+<body>
+<div class="container-fluid">
+<!-- Bootstrap Links -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="{% static "js/jquery.min.js" %}"></script>
+<script src="{% static "js/bootstrap.min.js" %}"></script>
+<!-- Bootstrap Links -->
+
+	<div id="header">
+		<a href="/" class="logo"><h3> My Shop </h3></a>
+	</div>
+	<div id="subheader">
+		<div class="cart">
+		Your cart is empty.
+		</div>
+	</div>
+	<div id="content">
+		{% block content %}
+		{% endblock %}
+	</div>
+</div>
+</body>
+
+</html>
