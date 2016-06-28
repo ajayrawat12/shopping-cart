@@ -12,8 +12,10 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+from django.utils.translation import gettext_lazy as _
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -39,10 +41,13 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'shop',
     'cart',
+    'orders',
+    'coupons',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -50,7 +55,10 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
 )
+
+CART_SESSION_ID = 'cart'
 
 ROOT_URLCONF = 'myshop.urls'
 
@@ -65,6 +73,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'cart.context_processors.cart',
             ],
         },
     },
@@ -75,6 +84,10 @@ WSGI_APPLICATION = 'myshop.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.8/ref/settings/#databases
+
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
 
 DATABASES = {
     'default': {
@@ -91,29 +104,54 @@ DATABASES = {
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = (
+            ('en', _('English')),
+            ('es', _('Spanish')),
+            )
+
+LOCALE_PATHS = (
+                os.path.join(BASE_DIR, 'locale/'),
+                )
 
 TIME_ZONE = 'UTC'
 
-USE_I18N = True
+USE_I18N = True   #A boolean that specifies whether Django's translation system is
+                    #enabled. This is True by default.
+
+"""A boolean indicating whether localized formatting is enabled,
+When active, localized formats are used to represent dates and numbers,
+This is False by default"""
 
 USE_L10N = True
 
+
+""" USE_TZ ==A boolean that specifies whether datetimes are timezone-aware.
+When you create a project with the startproject command, this is set
+to True."""
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_HOST_USER = "ekartshopping12@gmail.com"
+EMAIL_HOST_PASSWORD = 'devdevdev'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 STATIC_URL = '/static/'
 
-STATIC_ROOT = BASE_DIR + '/static_root/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static_root")
+]
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+#STATIC_ROOT = BASE_DIR + '/static_root/'
 
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
-
-CART_SESSION_ID = 'cart'

@@ -1,16 +1,33 @@
 from decimal import Decimal
 from django.conf import settings
 from shop.models import Product
+from coupons.models import Coupon
+
 
 class Cart(object):
     def __init__(self, request):
         """Initialize the cart."""
+
+        """We store the current session using
+            self.session = request.session to make it accessible to the other methods
+            of the Cart class."""
         self.session = request.session
+
+        """First, we try to get the cart from the current session using self.
+        session.get(settings.CART_SESSION_ID). If no cart is present in the
+        session, we set an empty cart just by setting an empty dictionary in
+        the session.We expect our cart dictionary to use product IDs as keys
+        and a dictionary with quantity and price as value for each key. By doing so,
+        we can guarantee that a product is not added more than once in the
+        cart; we can also simplify the way to access any cart item data."""
         cart = self.session.get(settings.CART_SESSION_ID)
+
         if not cart:
             # save an empty cart in the session
             cart = self.session[settings.CART_SESSION_ID] = {}
-        self.cart = Cart
+        self.cart = cart
+        # store current applied coupon
+        self.coupon_id = self.session.get('coupon_id')
 
     def add(self, product, quantity=1, update_quantity=False):
         """
@@ -24,6 +41,7 @@ class Cart(object):
         else:
             self.cart[product_id]['quantity'] += quantity
         self.save()
+        #self.session.modified = True  #added to rem coupon by default
 
     def save(self):
         # update the session cart
@@ -37,6 +55,7 @@ class Cart(object):
         if product_id in self.cart:
             del self.cart[product_id]
             self.save()
+        # self.session.modified = True  #changed to check remove func on 12 june 2016, 11:57 AM
 
     def __iter__(self):
         """Iterate over the items in the cart and get the products
@@ -63,3 +82,17 @@ class Cart(object):
         # remove cart from session
         del self.session[settings.CART_SESSION_ID]
         self.session.modified = True
+
+    @property
+    def coupon(self):
+        if self.coupon_id:
+            return Coupon.objects.get(id=self.coupon_id)
+        return None
+
+    def get_discount(self):
+        if self.coupon:
+            return (self.coupon.discount / Decimal('100')) * self.get_total_price()
+        return Decimal('0')
+
+    def get_total_price_after_discount(self):
+        return self.get_total_price() - self.get_discount()

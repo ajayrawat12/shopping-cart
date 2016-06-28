@@ -1,4 +1,5 @@
 {% extends "shop/base.html" %}
+
 {% load static %}
 
 {% block title %}
@@ -8,7 +9,6 @@
 {% endblock %}
 
 {% block content %}
-
 <div id="sidebar">
     <h3>Categories</h3>
 
@@ -25,18 +25,21 @@
 </ul>
 </div>
 
+<div class="container-fluid">
+<div class = "row">
+<div class="col-xs-6 col-md-4">
 <div id="main" class="product-list">
     <h1>{% if category %}{{ category.name }}{% else %}Products{% endif%}
     </h1>
     {% for product in products %}
 
-        <div class="col-md-4 col-sm-6">
+        <div class="col-sm-4">
         <div class="thumbnail">
             <a href="{{ product.get_absolute_url }}">
                 <p>
                     <div class="center-block">
                     <img src="{% if product.image %} {{ product.image.url }} {%else %} {% static "img/no_image.png" %}{% endif %}"
-                      class="img-responsive" alt="Responsive image"  class="img-rounded" width="215" height="200">
+                       class="img-responsive" alt="Responsive image" width="215" height="100" style="padding-top: 5px">
                     </div>
                  </p>
 
@@ -46,8 +49,23 @@
              Rs.{{ product.price }}
          </div>
         </div>
+    </div>
+</div>
+</div>
+</div>
 
     {% endfor %}
+
+    <script src="../js/jquery-1.9.1.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="docs.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="ie10-viewport-bug-workaround.js"></script>
+
+    <!-- jssor slider scripts-->
+    <!-- use jssor.slider.debug.js for debug -->
+    <script type="text/javascript" src="../js/jssor.slider.mini.js"></script>
+   
 </div>
 
 {% endblock %}

@@ -1,29 +1,66 @@
 {% load static %}
+
 <!DOCTYPE html>
 <html>
-	<head>
+<head>
 	<!-- Bootstrap Links -->
 	<link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<script src="{% static "js/jquery.min.js" %}"></script>
+	<script src="{% static "js/bootstrap.min.js" %}"></script>
+	{# <link rel="stylesheet" type="text/css" href="{% static "jssor.carousel.slider.for.bootstrap.example/examples-bootstrap/bootstrap-carousel.html" %}"> #}
 
 	<title>{% block title %}My shop{% endblock %}</title>
 
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
 </head>
 
+<style>
+.bg-1 {
+    background-color: #333; 
+    color: #333;
+}
+
+.bg-2 {
+    background-color: #474e5d; /* Dark Blue */
+    color: #ffffff;
+}
+
+.bg-3 {
+    background-color: #ffffff; /* White */
+    color: #555555;
+}
+</style>
+
 <body>
-<div class="container-fluid">
+<div class="container-fluid bg-1 text-center">
 <!-- Bootstrap Links -->
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-<script src="{% static "js/jquery.min.js" %}"></script>
-<script src="{% static "js/bootstrap.min.js" %}"></script>
+
 <!-- Bootstrap Links -->
+
+
 
 	<div id="header">
 		<a href="/" class="logo"><h3> My Shop </h3></a>
 	</div>
 	<div id="subheader">
+
 		<div class="cart">
-		Your cart is empty.
+			{% with total_items=cart|length %}
+				{% if cart|length > 0 %}
+					Your cart :
+					<a href="{% url "cart:cart_detail" %}">
+						{{ total_items }} item{{ total_items|pluralize }},
+						Rs.{{ cart.get_total_price }}
+					</a>
+				{% else %}
+					your cart is empty !!
+				{% endif %}
+			{% endwith %}
 		</div>
+
+
 	</div>
 	<div id="content">
 		{% block content %}
